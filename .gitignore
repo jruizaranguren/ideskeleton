@@ -55,3 +55,23 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Visual Studio files
+*.pyproj
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
