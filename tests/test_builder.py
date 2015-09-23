@@ -1,3 +1,13 @@
+﻿import pytest
+import ideskeleton as skeleton
+
+def test_if_source_path_does_not_exist_error():
+    with pytest.raises(IOError):
+        skeleton.build("C:\not_existing_path")
+ 
+if __name__ == "__main__":
+    pytest.main()
+
 '''
 SKETCH IDEAS
 
