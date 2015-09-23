@@ -1,5 +1,5 @@
 ﻿import os.path
-def build(source_path, overwrite = True):
+def build(source_path, overwrite = True, ide = "vstudio"):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
     '''
