@@ -64,6 +64,11 @@ target/
 *.userosscache
 *.sln.docstates
 
+# Git related Folders
+.git/
+.cache/
+.vs/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
