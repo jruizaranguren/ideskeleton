@@ -1,36 +1,26 @@
 ﻿import os.path
+
+def read_gitignore(source_path):
+    path = os.path.join(source_path,".gitignore")
+    with open(path,'r') as fgit:
+        valid_patterns = lambda l: l and not l.startswith("#")
+        return filter(valid_patterns, map(str.strip, fgit))
+
 def build(source_path, overwrite = True, ide = "vstudio"):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
-    '''
-    for root, dirs, files in os.walk("."):
-    path = root.split('/')
-    print (len(path) - 1) *'---' , os.path.basename(root)       
-    for file in files:
-        print len(path)*'---', file
-    '''
 
-    """ Read .gitignore if existing. Fail if not existing.
+    patterns = read_gitignore(source_path)
 
-    [to_ignore]
-    with open(".gitignore") as fgit:
-    for line in fgit:
-        trimmed = line.strip()
-        if trimmed and not trimmed.startswith("#"):
-            to_ignore.append(trimmed)
-    """
-
-    """ return if it is ignored
-    def is_ignored(path):
-    for pattern in to_ignore:
-        if fnmatch.fnmatch(path,pattern):
-            return True
-    return False
-    """
+    # test writabble .sln and .csproj files.
 
     """ Recursive filtering
-    for root, dirs, files in os.walk("."):
-    dirs = [d for d in dirs if not is_ignored(d)]
-    files = [f for f in files if not is_ignored(f)]
-    print root, dirs, files
-    """
+     for root,dirs,files in os.walk("."):
+   ....:     igdirs = [d for d in dirs if is_ignored(d+'\\')]
+   ....:     igfiles = [f for f in files if is_ignored(f)]
+   ....:     for d in igdirs:
+   ....:         dirs.remove(d)
+   ....:     for f in igfiles:
+   ....:         files.remove(f)
+   ....:     print root,  dirs, files    
+   """

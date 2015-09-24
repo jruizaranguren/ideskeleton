@@ -1,9 +1,28 @@
 ﻿import pytest
 import ideskeleton as skeleton
+import os
 
-def test_if_source_path_does_not_exist_error():
+def test_if_source_path_does_not_exist_error(tmpdir):
+    not_existing = os.path.join(tmpdir.dirname, "not_existing")
     with pytest.raises(IOError):
-        skeleton.build("C:\not_existing_path")
+        skeleton.build(not_existing)
+
+def test_if_gitignore_not_found_error(tmpdir):
+    with pytest.raises(IOError):
+        skeleton.build(tmpdir.dirname)
+
+def test_read_gitignore_returns_valid_patterns(tmpdir):
+    local = tmpdir.mkdir("test_read_gitignore").join(".gitignore")
+    local.write_text(u".git/\n" +
+                     "#this is a comment\n" + 
+                     "\n" +
+                     "*.sln\n" + 
+                     "[Dd]ebug/\n", 'ascii')
+    
+    patterns = skeleton.builder.read_gitignore(local.dirname)
+    
+    assert patterns == [".git/", "*.sln", "[Dd]ebug/"]
+    
  
 if __name__ == "__main__":
     pytest.main()
