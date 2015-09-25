@@ -4,6 +4,34 @@ from ideskeleton import builder
 import os
 import types
 
+@pytest.fixture(scope='session')
+def basic_structure(tmpdir_factory):
+    basic = tmpdir_factory.mktemp('basic_structure')
+    git_file = basic.join(".gitignore")
+   
+    git_file.write_text(u".git/\n" +
+                     "#this is a comment\n" + 
+                     "\n" +
+                     "*.sln\n" + 
+                     "[Dd]ebug/\n", 'ascii')
+    basic.join(".travis.yml").write("")
+    basic.join("LICENSE").write("")
+    basic.join("README.md").write("")
+    basic.join("requirements.txt").write("")
+    ideskeleton = basic.mkdir("ideskeleton")
+    test = basic.mkdir("tests")
+    data = test.mkdir("data")
+    ideskeleton.join("builder.py").write("")
+    ideskeleton.join("__init__.py").write("")
+    ideskeleton.join("__main__.py").write("")
+    test.join("test_builder.py").write("")
+    test.join("__init__.py").write("")
+    data.join("ideskeleton_pyproj.xml").write("")
+    data.join("ideskeleton_sln.txt").write("")
+    data.join("tests_pyproj.xml").write("")
+      
+    return basic
+
 def test_build_can_be_called_from_skeleton_package():
     assert type(skeleton.build) == types.FunctionType
 
@@ -55,51 +83,46 @@ def test_remove_ignored_modify_input_list_of_dirs_in_place():
     builder.remove_ignored(dirs, patterns, True)
 
     assert dirs == ["ideskeleton"]
- 
+
+
+def test_traverse_executes_the_process_function_per_folder_in_structure(basic_structure):
+    base_dir = str(basic_structure)
+    expected = [(0, base_dir,['ideskeleton', 'tests'],['.gitignore', '.travis.yml', 'LICENSE', 'README.md', 'requirements.txt']),
+                (1, base_dir + '\\ideskeleton', [], ['builder.py', '__init__.py', '__main__.py']),
+                (1, base_dir + '\\tests', ['data'], ['test_builder.py', '__init__.py']),
+                (2, base_dir + '\\tests\\data',[],['ideskeleton_pyproj.xml', 'ideskeleton_sln.txt', 'tests_pyproj.xml'])]
+
+    process = lambda level, root, dirs, files: [(level, root, dirs, files)]
+
+    actual = builder.traverse(str(basic_structure), process)
+
+    assert expected == actual
+
 if __name__ == "__main__":
     pytest.main()
 
 '''
 SKETCH IDEAS
 
-def build(source_path="./", overwrite=True):
-    # Path must exist
-    # Files must be writtable (if they are created and opened exception)
-   
-    ignore = parse_gitignore_if_exists(source_path)
+# Once in a project, things are added iteratively 
+    folders to ItemGroup Folders.
+    python files to ItemGroup as  Compile
+    rest of files to ItemGroup as Content
+    + Guid of project, + Guid of type of project
 
-    sln_file = create_sln(source_path) # Last tag after / is the solution name
-    proj_files = [create_proj(path) for path in get_dir(source_path)]
-    # Path must have some projectable sources.
-    sln_file.add(proj_files)
-    sln_file_add(non_excluded_files_as_solution_files)
+# Once in a solution
+    Solution files are added with no problem.
 
-    def traverse(path,container = None, level = 0):
-        if excluded(path):
-            return
 
-        if path is folder and not container:
-            sln = create_sln(path)
-            for child in path:
-                traverse(child, sln, level)
+    add_solution
+    add_project
+    add_file_to_solution
+    add_foder_to_project
+    add_file_to_project (compile/content)
 
-        if path is folder and is_solution(container):
-            proj = create_proj(path)
-            for child in path:
-                traverse(child, proj, level += 1)
-       
-        if path is folder and is_project(container):
-            container.add(path)
-            for child in path:
-                traverse(child, proj, level + = 1)
-
-        if path is file:
-            container.add(path)
-
-    Finally:
+    Finally, overwrite:
     write sln
     write csprojs
     write log???
-
 
 '''

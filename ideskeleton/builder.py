@@ -8,33 +8,40 @@ def read_gitignore(source_path):
         return list(filter(valid_patterns, map(str.strip, fgit)))
 
 def is_ignored(item, patterns):
-    return any(fnmatch(item, pattern) for pattern in patterns)
+    return any([fnmatch(item, pattern) for pattern in patterns])
+
+def traverse(source_path, process):
+    patterns = read_gitignore(source_path)
+    level = lambda path: path.count("\\") + source_path.count("/")
+    base_level = level(source_path)
+    actions = []
+    for root,dirs,files in os.walk(source_path):
+        remove_ignored(dirs, patterns, is_dir=True)
+        remove_ignored(files, patterns)
+        actions.extend(process(level(root) - base_level, root, dirs, files))
+    return actions
 
 def remove_ignored(alist, patterns, is_dir=False):
     checkdir = lambda x: x + "/" if is_dir else x
-    
     to_ignore = [itm for itm in alist if is_ignored(checkdir(itm),patterns)]
-    
     for toi in to_ignore:
         alist.remove(toi)
-    
 
+ide_processes = {
+        "vstudio": [None, None],
+        "none" : [
+            lambda level, root, dirs, files : [(level,root,dirs,files)],
+            None
+            ]
+    }
 
 def build(source_path, overwrite = True, ide = "vstudio"):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
 
-    patterns = read_gitignore(source_path)
+    read_process, write_process = ide_processes["none"]
+
+    actions = traverse(source_path, read_process)
 
     # test writabble .sln and .csproj files.
-
-    """ Recursive filtering
-     for root,dirs,files in os.walk("."):
-   ....:     igdirs = [d for d in dirs if is_ignored(d+'\\')]
-   ....:     igfiles = [f for f in files if is_ignored(f)]
-   ....:     for d in igdirs:
-   ....:         dirs.remove(d)
-   ....:     for f in igfiles:
-   ....:         files.remove(f)
-   ....:     print root,  dirs, files    
-   """
+    # write to files using function depending on ide, forcing if indicated
