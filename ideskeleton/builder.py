@@ -1,6 +1,6 @@
 ﻿import os.path
 from fnmatch import fnmatch
-from ideprocesses import processes
+from .ideprocesses import processes
 
 def read_gitignore(source_path):
     path = os.path.join(source_path,".gitignore")
