@@ -93,9 +93,21 @@ def test_traverse_executes_the_process_function_per_folder_in_structure(basic_st
 
     process = lambda level, root, dirs, files: [(level, root, dirs, files)]
 
-    actual = builder.traverse(str(basic_structure), process)
+    actual = builder.traverse(str(basic_structure),process)
 
     assert expected == actual
+
+def test_build_with_none_processing_returns_the_os_walk_result(basic_structure):
+    base_dir = str(basic_structure)
+    expected = [(0, base_dir,['ideskeleton', 'tests'],['.gitignore', '.travis.yml', 'LICENSE', 'README.md', 'requirements.txt']),
+                (1, base_dir + '\\ideskeleton', [], ['builder.py', '__init__.py', '__main__.py']),
+                (1, base_dir + '\\tests', ['data'], ['test_builder.py', '__init__.py']),
+                (2, base_dir + '\\tests\\data',[],['ideskeleton_pyproj.xml', 'ideskeleton_sln.txt', 'tests_pyproj.xml'])]
+
+
+    actual = builder.build(base_dir)
+
+    assert actual == expected
 
 if __name__ == "__main__":
     pytest.main()

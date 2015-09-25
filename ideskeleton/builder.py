@@ -28,13 +28,12 @@ def remove_ignored(alist, patterns, is_dir=False):
     for toi in to_ignore:
         alist.remove(toi)
 
-def build(source_path, overwrite = True, ide = "vstudio"):
+def build(source_path, overwrite = True, ide = None):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
 
-    read_process, write_process = processes["none"]
-
+    read_process, write_process = processes[ide]
     actions = traverse(source_path, read_process)
+    
+    return write_process(actions, source_path)
 
-    # test writabble .sln and .csproj files.
-    # write to files using function depending on ide, forcing if indicated
