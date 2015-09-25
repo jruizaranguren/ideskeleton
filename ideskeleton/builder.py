@@ -1,10 +1,14 @@
 ﻿import os.path
+from fnmatch import fnmatch
 
 def read_gitignore(source_path):
     path = os.path.join(source_path,".gitignore")
     with open(path,'r') as fgit:
         valid_patterns = lambda l: l and not l.startswith("#")
         return list(filter(valid_patterns, map(str.strip, fgit)))
+
+def is_ignored(item, patterns):
+    return any(fnmatch(item, pattern) for pattern in patterns)
 
 def build(source_path, overwrite = True, ide = "vstudio"):
     if not os.path.exists(source_path):

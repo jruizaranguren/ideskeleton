@@ -1,15 +1,20 @@
 ﻿import pytest
 import ideskeleton as skeleton
+from ideskeleton import builder
 import os
+import types
 
-def test_if_source_path_does_not_exist_error(tmpdir):
+def test_build_can_be_called_from_skeleton_package():
+    assert type(skeleton.build) == types.FunctionType
+
+def test_build_if_source_path_does_not_exist_error(tmpdir):
     not_existing = os.path.join(tmpdir.dirname, "not_existing")
     with pytest.raises(IOError):
-        skeleton.build(not_existing)
+        builder.build(not_existing)
 
-def test_if_gitignore_not_found_error(tmpdir):
+def test_build_if_gitignore_not_found_error(tmpdir):
     with pytest.raises(IOError):
-        skeleton.build(tmpdir.dirname)
+        builder.build(tmpdir.dirname)
 
 def test_read_gitignore_returns_valid_patterns(tmpdir):
     local = tmpdir.mkdir("test_read_gitignore").join(".gitignore")
@@ -19,10 +24,21 @@ def test_read_gitignore_returns_valid_patterns(tmpdir):
                      "*.sln\n" + 
                      "[Dd]ebug/\n", 'ascii')
     
-    patterns = skeleton.builder.read_gitignore(local.dirname)
+    patterns = builder.read_gitignore(local.dirname)
     
     assert patterns == [".git/", "*.sln", "[Dd]ebug/"]
-    
+
+@pytest.mark.parametrize("input,expected", [
+    (".git/", True),
+    ("sln", False),
+    ("debug/", True),
+    ("myname.sln", True),
+    ("C:\path\myname.sln", True)
+])
+def test_is_ignored_if_any_pattern_is_satified_then_true(input, expected):
+    patterns = [".git/", "*.sln", "[Dd]ebug/"]
+
+    assert builder.is_ignored(input, patterns) == expected
  
 if __name__ == "__main__":
     pytest.main()
@@ -69,6 +85,5 @@ def build(source_path="./", overwrite=True):
     write csprojs
     write log???
 
-    have a main to be used as application with simple args (source_path, overwrite).
-    
+
 '''
