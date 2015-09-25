@@ -87,9 +87,9 @@ def test_remove_ignored_modify_input_list_of_dirs_in_place():
 def test_traverse_executes_the_process_function_per_folder_in_structure(basic_structure):
     base_dir = str(basic_structure)
     expected = [(0, base_dir,['ideskeleton', 'tests'],['.gitignore', '.travis.yml', 'LICENSE', 'README.md', 'requirements.txt']),
-                (1, base_dir + '\\ideskeleton', [], ['builder.py', '__init__.py', '__main__.py']),
-                (1, base_dir + '\\tests', ['data'], ['test_builder.py', '__init__.py']),
-                (2, base_dir + '\\tests\\data',[],['ideskeleton_pyproj.xml', 'ideskeleton_sln.txt', 'tests_pyproj.xml'])]
+                (1, os.path.join(base_dir,"ideskeleton"), [], ['builder.py', '__init__.py', '__main__.py']),
+                (1, os.path.join(base_dir,"tests"), ['data'], ['test_builder.py', '__init__.py']),
+                (2, os.path.join(base_dir,"tests","data"),[],['ideskeleton_pyproj.xml', 'ideskeleton_sln.txt', 'tests_pyproj.xml'])]
 
     process = lambda level, root, dirs, files: [(level, root, dirs, files)]
 
@@ -100,9 +100,9 @@ def test_traverse_executes_the_process_function_per_folder_in_structure(basic_st
 def test_build_with_none_processing_returns_the_os_walk_result(basic_structure):
     base_dir = str(basic_structure)
     expected = [(0, base_dir,['ideskeleton', 'tests'],['.gitignore', '.travis.yml', 'LICENSE', 'README.md', 'requirements.txt']),
-                (1, base_dir + '\\ideskeleton', [], ['builder.py', '__init__.py', '__main__.py']),
-                (1, base_dir + '\\tests', ['data'], ['test_builder.py', '__init__.py']),
-                (2, base_dir + '\\tests\\data',[],['ideskeleton_pyproj.xml', 'ideskeleton_sln.txt', 'tests_pyproj.xml'])]
+                (1, os.path.join(base_dir,"ideskeleton"), [], ['builder.py', '__init__.py', '__main__.py']),
+                (1, os.path.join(base_dir,"tests"), ['data'], ['test_builder.py', '__init__.py']),
+                (2, os.path.join(base_dir,"tests","data"),[],['ideskeleton_pyproj.xml', 'ideskeleton_sln.txt', 'tests_pyproj.xml'])]
 
 
     actual = builder.build(base_dir)
