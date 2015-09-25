@@ -84,7 +84,6 @@ def test_remove_ignored_modify_input_list_of_dirs_in_place():
 
     assert dirs == ["ideskeleton"]
 
-
 def test_traverse_executes_the_process_function_per_folder_in_structure(basic_structure):
     base_dir = str(basic_structure)
     expected = [(0, base_dir,['ideskeleton', 'tests'],['.gitignore', '.travis.yml', 'LICENSE', 'README.md', 'requirements.txt']),

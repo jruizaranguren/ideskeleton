@@ -1,5 +1,6 @@
 ﻿import os.path
 from fnmatch import fnmatch
+from ideprocesses import processes
 
 def read_gitignore(source_path):
     path = os.path.join(source_path,".gitignore")
@@ -27,19 +28,11 @@ def remove_ignored(alist, patterns, is_dir=False):
     for toi in to_ignore:
         alist.remove(toi)
 
-ide_processes = {
-        "vstudio": [None, None],
-        "none" : [
-            lambda level, root, dirs, files : [(level,root,dirs,files)],
-            None
-            ]
-    }
-
 def build(source_path, overwrite = True, ide = "vstudio"):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
 
-    read_process, write_process = ide_processes["none"]
+    read_process, write_process = processes["none"]
 
     actions = traverse(source_path, read_process)
 
