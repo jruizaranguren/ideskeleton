@@ -112,28 +112,3 @@ def test_build_with_none_processing_returns_the_os_walk_result(basic_structure):
 if __name__ == "__main__":
     pytest.main()
 
-'''
-SKETCH IDEAS
-
-# Once in a project, things are added iteratively 
-    folders to ItemGroup Folders.
-    python files to ItemGroup as  Compile
-    rest of files to ItemGroup as Content
-    + Guid of project, + Guid of type of project
-
-# Once in a solution
-    Solution files are added with no problem.
-
-
-    add_solution
-    add_project
-    add_file_to_solution
-    add_foder_to_project
-    add_file_to_project (compile/content)
-
-    Finally, overwrite:
-    write sln
-    write csprojs
-    write log???
-
-'''
