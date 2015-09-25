@@ -35,10 +35,26 @@ def test_read_gitignore_returns_valid_patterns(tmpdir):
     ("myname.sln", True),
     ("C:\path\myname.sln", True)
 ])
-def test_is_ignored_if_any_pattern_is_satified_then_true(input, expected):
+def test_is_ignored_check_if_patterns_are_satisfied(input, expected):
     patterns = [".git/", "*.sln", "[Dd]ebug/"]
 
     assert builder.is_ignored(input, patterns) == expected
+
+def test_remove_ignored_modify_input_list_of_files_in_place():
+    patterns = [".git/", "*.sln", "[Dd]ebug/"]
+    files = [".git", "C:\path\myname.sln", "code.py"]
+
+    builder.remove_ignored(files, patterns)
+
+    assert files == [".git", "code.py"]
+
+def test_remove_ignored_modify_input_list_of_dirs_in_place():
+    patterns = [".git/", "*.sln", "[Dd]ebug/"]
+
+    dirs = [".git", "ideskeleton","debug"]
+    builder.remove_ignored(dirs, patterns, True)
+
+    assert dirs == ["ideskeleton"]
  
 if __name__ == "__main__":
     pytest.main()

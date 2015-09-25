@@ -10,6 +10,16 @@ def read_gitignore(source_path):
 def is_ignored(item, patterns):
     return any(fnmatch(item, pattern) for pattern in patterns)
 
+def remove_ignored(alist, patterns, is_dir=False):
+    checkdir = lambda x: x + "/" if is_dir else x
+    
+    to_ignore = [itm for itm in alist if is_ignored(checkdir(itm),patterns)]
+    
+    for toi in to_ignore:
+        alist.remove(toi)
+    
+
+
 def build(source_path, overwrite = True, ide = "vstudio"):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
