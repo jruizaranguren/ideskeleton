@@ -13,7 +13,7 @@ def is_ignored(item, patterns):
 
 def traverse(source_path, process):
     patterns = read_gitignore(source_path)
-    level = lambda path: path.count("\\") + source_path.count("/")
+    level = lambda path: path.count("\\") + path.count("/")
     base_level = level(source_path)
     actions = []
     for root,dirs,files in os.walk(source_path):
