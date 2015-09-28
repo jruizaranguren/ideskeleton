@@ -38,6 +38,46 @@ def test_vstudio_dirs_at_the_first_level_are_added_as_solution_projects():
         ]
     assert actual == expected
 
+def test_vstudio_dirs_at_the_second_level_are_added_as_project_folders_for_relative_path():
+    actual = ide.vstudio_read(1, "./MySolution/Dir1", ["sub_dir1","sub_dir2"], [])
+    expected = [
+        ("add_folder_to_project", "Dir1", "sub_dir1"),
+        ("add_folder_to_project", "Dir1", "sub_dir2")
+        ]
+    assert actual == expected
+
+def test_vstudio_dirs_at_the_second_level_are_added_as_project_folders_for_absolute_path():
+    actual = ide.vstudio_read(1, "C:/Projects/MySolution/Dir1", ["sub_dir1","sub_dir2"], [])
+    expected = [
+        ("add_folder_to_project", "Dir1", "sub_dir1"),
+        ("add_folder_to_project", "Dir1", "sub_dir2")
+        ]
+    assert actual == expected
+
+def test_vstudio_files_at_the_second_level_are_added_as_project_items_for_absolute_path():
+    actual = ide.vstudio_read(1, "C:/Projects/MySolution/Dir1", [], ["sub_file1","sub_file2"])
+    expected = [
+        ("add_file_to_project", "Dir1", "sub_file1"),
+        ("add_file_to_project", "Dir1", "sub_file2")
+        ]
+    assert actual == expected
+
+def test_vstudio_files_at_the_second_level_are_added_as_project_items_for_relative_path():
+    actual = ide.vstudio_read(1, "./MySolution/Dir1", [], ["sub_file1","sub_file2"])
+    expected = [
+        ("add_file_to_project", "Dir1", "sub_file1"),
+        ("add_file_to_project", "Dir1", "sub_file2")
+        ]
+    assert actual == expected
+
+#def test_vstudio_files_at_a_higher_than_second_level_are_added_as_project_items_considering_relative_path_from_project_path():
+#    pass
+
+#def test_vstudio_dirs_at_a_higher_than_second_level_are_added_as_project_folders_considering_relative_path_from_project_path():
+#    pass
+
+
+
 
 '''
 SKETCH IDEAS
