@@ -9,8 +9,15 @@ def none_write(actions, path):
 
 def vstudio_read(level, root, dirs, files):
     next_actions = []
-    solution_name = basename(abspath(root))
-    next_actions.append(("add_solution",solution_name))
+
+    if level == 0:
+        solution_name = basename(abspath(root))
+        next_actions.append(("add_solution",None,solution_name))
+        for file in files:
+            next_actions.append(("add_file_to_solution",solution_name, file))
+        for dir in dirs:
+            next_actions.append(("add_project_to_solution", solution_name, dir))
+
     return next_actions
 
 
