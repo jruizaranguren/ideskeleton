@@ -35,5 +35,5 @@ def build(source_path, overwrite = True, ide = None):
     read_process, write_process = processes[ide]
     actions = traverse(source_path, read_process)
     
-    return write_process(actions, source_path)
+    return write_process(actions, source_path, overwrite)
 

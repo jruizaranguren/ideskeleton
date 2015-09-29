@@ -49,6 +49,7 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
 
     expected = {
         "MySolution.sln" : {
+            "identifier": ide.identifier("MySolution.sln"),
             ide.ADD_COMPILE : [
                 "file1.py"
                 ],
