@@ -32,21 +32,22 @@ def vstudio_read(level, root, dirs, files):
     container, relative_path = parse_path(level, abspath(root))
 
     if level == 0:
+        container += ".sln"
         next_actions.append((ADD_CONTAINER,None,container))
-        for file in files:
-            next_actions.append(("add_file_to_solution",container, file))
         for dir in dirs:
-            next_actions.append(("add_project_to_solution", container, dir))
+            next_actions.append((ADD_CONTAINER, container, dir + ".pyproj"))
 
     if level >= 1:
+        container += ".pyproj"
         for dir in dirs:
-            next_actions.append(("add_folder_to_project",container,join(relative_path,dir,"")))
-        for file in files:
-            name, extension = splitext(file)
-            if extension in compilables: 
-                next_actions.append(("compile_to_project",container,join(relative_path,file)))
-            else:
-                next_actions.append(("content_to_project",container,join(relative_path,file)))
+            next_actions.append((ADD_FOLDER,container,join(relative_path,dir,"")))
+
+    for file in files:
+        name, extension = splitext(file)
+        if extension in compilables: 
+            next_actions.append((ADD_COMPILE,container,join(relative_path,file)))
+        else:
+            next_actions.append((ADD_CONTENT,container,join(relative_path,file)))
 
     return next_actions
 
@@ -57,6 +58,7 @@ def arrange_actions_into_structure(actions):
         if action == ADD_CONTAINER:
             if not container:
                 structure[path] = {
+                    "compile":[],
                     "content":[],
                     "projects":[]
                     }
@@ -70,7 +72,6 @@ def arrange_actions_into_structure(actions):
                     }
         else:
             structure[container][action].append(path)
-             
 
     return structure
 
