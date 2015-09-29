@@ -1,5 +1,14 @@
 ﻿
-from os.path import abspath, basename
+from os.path import abspath, basename, splitext, dirname, isabs, join
+
+compilables = set([".py"])
+
+def parse_path(level, path):
+    if level > 1:
+        proj, rel_path = parse_path(level - 1, dirname(path))
+        return proj, join(rel_path, basename(path), "")
+    else:
+        return basename(path), ""
 
 def none_read(level, root, dirs, files):
     return [(level, root, dirs, files)]
@@ -10,26 +19,24 @@ def none_write(actions, path):
 def vstudio_read(level, root, dirs, files):
     next_actions = []
 
+    container, relative_path = parse_path(level, abspath(root))
+
     if level == 0:
-        solution_name = basename(abspath(root))
-        next_actions.append(("add_solution",None,solution_name))
+        next_actions.append(("add_solution",None,container))
         for file in files:
-            next_actions.append(("add_file_to_solution",solution_name, file))
+            next_actions.append(("add_file_to_solution",container, file))
         for dir in dirs:
-            next_actions.append(("add_project_to_solution", solution_name, dir))
+            next_actions.append(("add_project_to_solution", container, dir))
 
-    if level == 1:
-        project_name = basename(abspath(root))
+    if level >= 1:
         for dir in dirs:
-            # WARN: This is not correct. Split in add_content_to_project and add_compile_to_project
-            next_actions.append(("add_folder_to_project",project_name,dir))
+            next_actions.append(("add_folder_to_project",container,join(relative_path,dir,"")))
         for file in files:
-            next_actions.append(("add_file_to_project",project_name,file))
-
-    if level > 1:
-        root_path = abspath(root)
-        # Need a function to extract project name an relative path to current level items
-        pass
+            name, extension = splitext(file)
+            if extension in compilables: 
+                next_actions.append(("compile_to_project",container,join(relative_path,file)))
+            else:
+                next_actions.append(("content_to_project",container,join(relative_path,file)))
 
     return next_actions
 
