@@ -169,7 +169,7 @@ def vstudio_write(actions, path, overwrite = False):
                 "\t<PropertyGroup Condition=\"'$(Configuration)' == 'Release'\" />",
                 "\t<PropertyGroup>",
                 "\t\t<VisualStudioVersion Condition=\" '$(VisualStudioVersion)' == '' \">10.0</VisualStudioVersion>",
-                "\t\t<PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>",
+                "\t\t<PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>",
                 "\t</PropertyGroup>"
                 ])
 
