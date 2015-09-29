@@ -1,7 +1,13 @@
 ﻿
 from os.path import abspath, basename, splitext, dirname, isabs, join
+from uuid import uuid5, UUID
 
 compilables = set([".py"])
+
+
+def identifier(path):
+    namespace = UUID("{D4A33062-9785-467D-8179-05177E00F1E2}")
+    return uuid5(namespace,path)
 
 def parse_path(level, path):
     if level > 1:
@@ -39,6 +45,48 @@ def vstudio_read(level, root, dirs, files):
                 next_actions.append(("content_to_project",container,join(relative_path,file)))
 
     return next_actions
+
+def arrange_actions_into_structure(actions):
+    structure = {}
+    for action, container, path in actions:
+        if action == "add_solution":
+            structure[path + ".sln"] = {
+                "content":[],
+                "projects":[]
+                }
+        elif action == "add_file_to_solution":
+            structure[container + ".sln"]["content"].append(path)
+        elif action == "add_project_to_solution":
+            structure[container + ".sln"]["projects"].append(path)
+            structure[path + ".pyproj"] = {
+                "identifier":identifier(path), 
+                "folders":[], 
+                "compile":[], 
+                "content":[]
+                }
+        elif action == "add_folder_to_project":
+            structure[container + ".pyproj"]["folders"].append(path)
+        elif action == "compile_to_project":
+            structure[container + ".pyproj"]["compile"].append(path)
+        elif action == "content_to_project":
+            structure[container + ".pyproj"]["content"].append(path)
+    return structure
+
+def vstudio_write(actions, path):
+    structure = arrange_actions_into_structure(actions)
+
+    for file_name, metadata in structure.iteritems():
+        name, extension = splitext(file_name)
+        
+        if extension == ".sln":
+            full_path = join(path, file_name)
+        else:
+            full_path = join(path, name, file_name)
+
+    # Write each file except IOException
+
+
+
 
 
 processes = {

@@ -32,6 +32,61 @@ def test_parse_path_at_higher_levels_returns_project_name_and_relative_path_to_i
     container, relative = ide.parse_path(level, path)
     assert (container, relative) == expected
 
+
+def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type():
+    actions = [
+        ("add_solution", None, "MySolution"),
+        ("add_project_to_solution", "MySolution", "Proj1"),
+        ("add_project_to_solution", "MySolution", "Proj2"),
+        ("add_file_to_solution", "MySolution","file1.py"),
+        ("add_file_to_solution", "MySolution","file2.txt"),
+        ("add_folder_to_project", "Proj1", join("sub_dir1","")),
+        ("add_folder_to_project", "Proj1", join("sub_dir2","")),
+        ("add_folder_to_project", "Proj2", join("sub_dir3","")),
+        ("compile_to_project", "Proj1", "sub_file1.py"),
+        ("content_to_project", "Proj1", "sub_file2.txt"),
+        ("content_to_project", "Proj2", "sub_file3.txt")
+        ]
+
+    expected = {
+        "MySolution.sln" : {
+            "content" : [
+                "file1.py",
+                "file2.txt"
+                ],
+            "projects" : [
+                "Proj1",
+                "Proj2"
+                ]
+            },
+        "Proj1.pyproj" : {
+            "identifier": ide.identifier("Proj1"),
+            "folders": [
+                join("sub_dir1",""),
+                join("sub_dir2","")
+                ],
+            "compile": [
+                "sub_file1.py"
+                ],
+            "content": [
+                "sub_file2.txt"
+                ]
+            },
+        "Proj2.pyproj" : {
+            "identifier": ide.identifier("Proj2"),
+            "folders": [
+                join("sub_dir3","")
+                ],
+            "compile": [
+                ],
+            "content": [
+                "sub_file3.txt"
+                ]
+            }
+        }
+
+    assert ide.arrange_actions_into_structure(actions) == expected
+
 def test_vstudio_read_a_solution_is_created_at_level_zero_for_relative_paths():
     actual =  ide.vstudio_read(0,".", [],[])
     assert actual[0] == ("add_solution", None, "ideskeleton")
@@ -98,7 +153,7 @@ def test_vstudio_read_files_at_the_second_level_distinguises_compilable_from_con
         ]
     assert actual == expected
 
-def test_vstudio_files_at_a_higher_than_second_level_are_added_as_project_items_considering_relative_path_from_project_path():
+def test_vstudio_read_files_at_a_higher_than_second_level_are_added_as_project_items_considering_relative_path_from_project_path():
     actual = ide.vstudio_read(2, "./MySolution/Proj1/Dir1", [], ["sub_file1.py","sub_file2.txt"])
     expected = [
         ("compile_to_project", "Proj1", join("Dir1","sub_file1.py")),
@@ -106,7 +161,7 @@ def test_vstudio_files_at_a_higher_than_second_level_are_added_as_project_items_
         ]
     assert actual == expected
 
-def test_vstudio_dirs_at_a_higher_than_second_level_are_added_as_project_folders_considering_relative_path_from_project_path():
+def test_vstudio_read_dirs_at_a_higher_than_second_level_are_added_as_project_folders_considering_relative_path_from_project_path():
     actual = ide.vstudio_read(2, "C:/Projects/MySolution/Proj1/Dir1", ["sub_dir1","sub_dir2"], [])
     expected = [
         ("add_folder_to_project", "Proj1", join("Dir1","sub_dir1","")),
@@ -115,30 +170,3 @@ def test_vstudio_dirs_at_a_higher_than_second_level_are_added_as_project_folders
     assert actual == expected
 
 
-
-
-'''
-SKETCH IDEAS
-
-# Once in a project, things are added iteratively 
-    folders to ItemGroup Folders.
-    python files to ItemGroup as  Compile
-    rest of files to ItemGroup as Content
-    + Guid of project, + Guid of type of project
-
-# Once in a solution
-    Solution files are added with no problem.
-
-
-    add_solution
-    add_project
-    add_file_to_solution
-    add_foder_to_project
-    add_file_to_project (compile/content)
-
-    Finally, overwrite:
-    write sln
-    write csprojs
-    write log???
-
-'''
