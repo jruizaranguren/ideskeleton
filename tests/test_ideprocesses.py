@@ -32,20 +32,19 @@ def test_parse_path_at_higher_levels_returns_project_name_and_relative_path_to_i
     container, relative = ide.parse_path(level, path)
     assert (container, relative) == expected
 
-
 def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type():
     actions = [
-        ("add_solution", None, "MySolution"),
-        ("add_project_to_solution", "MySolution", "Proj1"),
-        ("add_project_to_solution", "MySolution", "Proj2"),
-        ("add_file_to_solution", "MySolution","file1.py"),
-        ("add_file_to_solution", "MySolution","file2.txt"),
-        ("add_folder_to_project", "Proj1", join("sub_dir1","")),
-        ("add_folder_to_project", "Proj1", join("sub_dir2","")),
-        ("add_folder_to_project", "Proj2", join("sub_dir3","")),
-        ("compile_to_project", "Proj1", "sub_file1.py"),
-        ("content_to_project", "Proj1", "sub_file2.txt"),
-        ("content_to_project", "Proj2", "sub_file3.txt")
+        (ide.ADD_CONTAINER, None, "MySolution.sln"),
+        (ide.ADD_CONTAINER, "MySolution.sln", "Proj1.pyproj"),
+        (ide.ADD_CONTAINER, "MySolution.sln", "Proj2.pyproj"),
+        (ide.ADD_CONTENT, "MySolution.sln","file1.py"),
+        (ide.ADD_CONTENT, "MySolution.sln","file2.txt"),
+        (ide.ADD_FOLDER, "Proj1.pyproj", join("sub_dir1","")),
+        (ide.ADD_FOLDER, "Proj1.pyproj", join("sub_dir2","")),
+        (ide.ADD_FOLDER, "Proj2.pyproj", join("sub_dir3","")),
+        (ide.ADD_COMPILE, "Proj1.pyproj", "sub_file1.py"),
+        (ide.ADD_CONTENT, "Proj1.pyproj", "sub_file2.txt"),
+        (ide.ADD_CONTENT, "Proj2.pyproj", "sub_file3.txt")
         ]
 
     expected = {
@@ -55,12 +54,12 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
                 "file2.txt"
                 ],
             "projects" : [
-                "Proj1",
-                "Proj2"
+                "Proj1.pyproj",
+                "Proj2.pyproj"
                 ]
             },
         "Proj1.pyproj" : {
-            "identifier": ide.identifier("Proj1"),
+            "identifier": ide.identifier("Proj1.pyproj"),
             "folders": [
                 join("sub_dir1",""),
                 join("sub_dir2","")
@@ -73,7 +72,7 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
                 ]
             },
         "Proj2.pyproj" : {
-            "identifier": ide.identifier("Proj2"),
+            "identifier": ide.identifier("Proj2.pyproj"),
             "folders": [
                 join("sub_dir3","")
                 ],
@@ -89,16 +88,16 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
 
 def test_vstudio_read_a_solution_is_created_at_level_zero_for_relative_paths():
     actual =  ide.vstudio_read(0,".", [],[])
-    assert actual[0] == ("add_solution", None, "ideskeleton")
+    assert actual[0] == (ide.ADD_CONTAINER, None, "ideskeleton")
 
 def test_vstudio_read_a_solution_is_created_at_level_zero_for_absolute_paths():
     actual = ide.vstudio_read(0,"C:/Projects/MySolution",[],[])
-    assert actual[0] == ("add_solution", None, "MySolution")
+    assert actual[0] == (ide.ADD_CONTAINER, None, "MySolution")
 
 def test_vstudio_read_files_at_the_first_level_are_added_as_solution_files():
     actual = ide.vstudio_read(0, "C:/Projects/MySolution", [], ["file1.py", "file2.txt"])
     expected = [
-        ("add_solution", None, "MySolution"),
+        (ide.ADD_CONTAINER, None, "MySolution"),
         ("add_file_to_solution", "MySolution","file1.py"),
         ("add_file_to_solution", "MySolution","file2.txt")
         ]
@@ -107,7 +106,7 @@ def test_vstudio_read_files_at_the_first_level_are_added_as_solution_files():
 def test_vstudio_read_dirs_at_the_first_level_are_added_as_solution_projects():
     actual = ide.vstudio_read(0, "C:/Projects/MySolution", ["dir1","dir2"], [])
     expected = [
-        ("add_solution", None, "MySolution"),
+        (ide.ADD_CONTAINER, None, "MySolution"),
         ("add_project_to_solution", "MySolution", "dir1"),
         ("add_project_to_solution", "MySolution", "dir2")
         ]

@@ -4,6 +4,10 @@ from uuid import uuid5, UUID
 
 compilables = set([".py"])
 
+ADD_CONTAINER = "container"
+ADD_CONTENT = "content"
+ADD_COMPILE = "compile"
+ADD_FOLDER=  "folders"
 
 def identifier(path):
     namespace = UUID("{D4A33062-9785-467D-8179-05177E00F1E2}")
@@ -28,7 +32,7 @@ def vstudio_read(level, root, dirs, files):
     container, relative_path = parse_path(level, abspath(root))
 
     if level == 0:
-        next_actions.append(("add_solution",None,container))
+        next_actions.append((ADD_CONTAINER,None,container))
         for file in files:
             next_actions.append(("add_file_to_solution",container, file))
         for dir in dirs:
@@ -49,27 +53,25 @@ def vstudio_read(level, root, dirs, files):
 def arrange_actions_into_structure(actions):
     structure = {}
     for action, container, path in actions:
-        if action == "add_solution":
-            structure[path + ".sln"] = {
-                "content":[],
-                "projects":[]
-                }
-        elif action == "add_file_to_solution":
-            structure[container + ".sln"]["content"].append(path)
-        elif action == "add_project_to_solution":
-            structure[container + ".sln"]["projects"].append(path)
-            structure[path + ".pyproj"] = {
-                "identifier":identifier(path), 
-                "folders":[], 
-                "compile":[], 
-                "content":[]
-                }
-        elif action == "add_folder_to_project":
-            structure[container + ".pyproj"]["folders"].append(path)
-        elif action == "compile_to_project":
-            structure[container + ".pyproj"]["compile"].append(path)
-        elif action == "content_to_project":
-            structure[container + ".pyproj"]["content"].append(path)
+
+        if action == ADD_CONTAINER:
+            if not container:
+                structure[path] = {
+                    "content":[],
+                    "projects":[]
+                    }
+            else:
+                structure[container]["projects"].append(path)
+                structure[path] = {
+                    "identifier":identifier(path), 
+                    "folders":[], 
+                    "compile":[], 
+                    "content":[]
+                    }
+        else:
+            structure[container][action].append(path)
+             
+
     return structure
 
 def vstudio_write(actions, path):
