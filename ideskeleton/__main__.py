@@ -8,29 +8,31 @@ Note:
 
 """
 import argparse
-import builder
+from ideskeleton.builder import build
 
-parser = argparse.ArgumentParser(description = __doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+def main():
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("source_path",
+                        help="root path of the folder structure used to generate the IDE skeleton",
+                        type=str)
+    parser.add_argument("-f",
+                        "--force",
+                        help="force overwrite existing solution and project files",
+                        action="store_true")
+    parser.add_argument("-i",
+                        "--ide",
+                        help="choose IDE",
+                        type=str,
+                        choices=["vstudio"])
 
-parser.add_argument("source_path", 
-                    help = "root path of the folder structure used to generate the IDE skeleton",
-                    type = str)
-parser.add_argument("-f",
-                   "--force",
-                   help = "force overwrite existing solution and project files",
-                   action = "store_true")
-parser.add_argument("-i",
-                    "--ide",
-                    help = "choose IDE",
-                    type = str,
-                    choices = ["vstudio"])
+    args = parser.parse_args()
 
-args = parser.parse_args()
+    if not args.ide:
+        args.ide = "vstudio"
 
-if not args.ide:
-    args.ide = "vstudio"
+    build(args.source_path, args.force, args.ide)
 
-builder.build(args.source_path, args.force, args.ide)
+main()
 
 
