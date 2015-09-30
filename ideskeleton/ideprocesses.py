@@ -14,7 +14,7 @@ SOL_TYPE = "2150E333-8FDC-42A3-9474-1A3956D46DE8"
 
 def identifier(path):
     namespace = UUID("{D4A33062-9785-467D-8179-05177E00F1E2}")
-    return uuid5(namespace,path)
+    return str(uuid5(namespace,path)).upper()
 
 def parse_path(level, path):
     if level > 1:
@@ -89,7 +89,6 @@ def vstudio_write(actions, path, overwrite = False):
         if extension == ".sln":
             full_path = join(path, file_name)
             lines.extend([
-                "",
                 "Microsoft Visual Studio Solution File, Format Version 12.00",
                 "# Visual Studio 14",
                 "VisualStudioVersion = 14.0.23107.0",
@@ -100,26 +99,26 @@ def vstudio_write(actions, path, overwrite = False):
                 proj_name = splitext(project)[0]
                 lines.append("Project(\"{{{}}}\") = \"{}\", \"{}\", \"{{{}}}\"".format(
                     PROJ_TYPE,
-                    name, 
+                    proj_name, 
                     join(proj_name,project),
-                    str(structure[project]["identifier"])))
+                    structure[project]["identifier"]))
                 lines.append("EndProject")
              
-            all_content = metadata[ADD_CONTENT].extend(metadata[ADD_COMPILE])
-
-            if all_content:
-                lines.extend([
-                    "Project(\"{{{}}}\") = \"Solution Items\", \"Solution Items\", \"{{}}\"".format(SOL_TYPE, str(metadata["identifier"])),
+            lines.extend([
+                    "Project(\"{{{}}}\") = \"Solution Items\", \"Solution Items\", \"{{{}}}\"".format(SOL_TYPE, metadata["identifier"]),
                     "\tProjectSection(SolutionItems) = preProject",
                     ])
 
-                for item in all_content:
-                    lines.append(["{} = {}".format(item,item)])
+            for item in metadata[ADD_CONTENT]:
+               lines.append("\t\t{} = {}".format(item,item))
 
-                lines.extend([
-                    "\tEndProjectSection",
-                    "EndProject"
-                    ])
+            for item in metadata[ADD_COMPILE]:
+               lines.append("\t\t{} = {}".format(item,item))
+
+            lines.extend([
+                "\tEndProjectSection",
+                "EndProject"
+                ])
 
             lines.extend([
                 "Global",
@@ -141,7 +140,8 @@ def vstudio_write(actions, path, overwrite = False):
                 "\tGlobalSection(SolutionProperties) = preSolution",
                 "\t\tHideSolutionNode = FALSE",
                 "\tEndGlobalSection",
-                "EndGlobal"
+                "EndGlobal",
+                ""
                 ])
 
         else:
@@ -176,7 +176,7 @@ def vstudio_write(actions, path, overwrite = False):
             if metadata[ADD_COMPILE]:
                 lines.append("\t<ItemGroup>")
                 for item in metadata[ADD_COMPILE]:
-                    lines.append("\t\t<Compile Include=\"../{}/{}\" />".format(name, item))
+                    lines.append("\t\t<Compile Include=\"{}\" />".format(item))
                 lines.append("\t</ItemGroup>")
 
             if metadata[ADD_FOLDER]:
@@ -187,7 +187,7 @@ def vstudio_write(actions, path, overwrite = False):
 
             if metadata[ADD_CONTENT]:
                 lines.append("\t<ItemGroup>")
-                for item in metadata[ADD_COMPILE]:
+                for item in metadata[ADD_CONTENT]:
                     lines.append("\t\t<Content Include=\"{}\" />".format(item))
                 lines.append("\t</ItemGroup>")
 

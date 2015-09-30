@@ -1,6 +1,36 @@
 ﻿import pytest
-from os.path import join
-from ideskeleton import ideprocesses as ide
+from os.path import join, exists
+from ideskeleton import builder, ideprocesses as ide
+
+@pytest.fixture(scope='session')
+def solution_builder(tmpdir_factory):
+    basic = tmpdir_factory.mktemp('solution_builder')
+    git_file = basic.join(".gitignore")
+   
+    git_file.write_text(u".git/\n" +
+                     "#this is a comment\n" + 
+                     "\n" +
+                     "*.sln\n" + 
+                     "[Dd]ebug/\n", 'ascii')
+    basic.join(".travis.yml").write("")
+    basic.join("LICENSE").write("")
+    basic.join("README.md").write("")
+    basic.join("requirements.txt").write("")
+    ideskeleton = basic.mkdir("ideskeleton")
+    test = basic.mkdir("tests")
+    data = test.mkdir("data")
+    ideskeleton.join("builder.py").write("")
+    ideskeleton.join("__init__.py").write("")
+    ideskeleton.join("__main__.py").write("")
+    test.join("test_builder.py").write("")
+    test.join("__init__.py").write("")
+    data.join("ideskeleton_pyproj.xml").write("")
+    data.join("ideskeleton_sln.txt").write("")
+    data.join("tests_pyproj.xml").write("")
+
+    builder.build(str(basic),ide = "vstudio")
+
+    return basic
 
 def test_none_read_it_just_returns_the_input_within_a_list():
     actual = ide.none_read(0,".",["dir1"],["file"])
@@ -170,5 +200,42 @@ def test_vstudio_read_dirs_at_a_higher_than_second_level_are_added_as_project_fo
         (ide.ADD_FOLDER, "Proj1.pyproj", join("Dir1","sub_dir2",""))
         ]
     assert actual == expected
+
+def test_vstudio_write_solution_and_project_files_are_created(solution_builder):
+    solution = str(solution_builder.join("solution_builder0.sln"))
+    ideskeleton = str(solution_builder.join("ideskeleton").join("ideskeleton.pyproj"))
+    tests = str(solution_builder.join("tests").join("tests.pyproj"))
+    
+    assert all(map(exists, [solution, ideskeleton, tests]))
+
+def test_vstudio_write_solution_file_content_is_correct(solution_builder):
+    # Due to Linux/Windows different treatment of directory separators comparing
+    # the exact written output is not feasible, so just some weak probabilistic tests are done.
+    solution = str(solution_builder.join("solution_builder0.sln"))
+
+    with open(solution,"r") as file:
+        text = file.read()
+
+        assert all([
+            ".gitignore = .gitignore" in text,
+            "Project(\"{888888A0-9F3D-457C-B088-3A5042F75D52}\") = \"ideskeleton\"" in text,
+            "Project(\"{888888A0-9F3D-457C-B088-3A5042F75D52}\") = \"tests\"" in text,
+            "Project(\"{2150E333-8FDC-42A3-9474-1A3956D46DE8}\") = \"Solution Items\"" in text
+            ])
+
+def test_vstudio_write_project_file_content_is_correct(solution_builder):
+    # Due to Linux/Windows different treatment of directory separators comparing
+    # the exact written output is not feasible, so just some weak probabilistic tests are done.
+    tests = str(solution_builder.join("tests").join("tests.pyproj"))
+
+    with open(tests, "r") as file:
+        text = file.read()
+
+        assert all([
+            "<ProjectGuid>{FFFE5AC8-6AB7-53F7-8C22-07C267C567CC}</ProjectGuid>" in text,
+            "<Compile Include=\"test_builder.py\" />" in text,
+            "<Folder Include=\"{}\" />".format(join("data","")) in text,
+            "<Content Include=\"{}\" />".format(join("data","ideskeleton_pyproj.xml")) in text
+            ])
 
 
