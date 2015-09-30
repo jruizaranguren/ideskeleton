@@ -82,7 +82,7 @@ def arrange_actions_into_structure(actions):
 def vstudio_write(actions, path, overwrite = False):
     structure = arrange_actions_into_structure(actions)
 
-    for file_name, metadata in structure.iteritems():
+    for file_name, metadata in structure.items():
         name, extension = splitext(file_name)
         lines = []
         
