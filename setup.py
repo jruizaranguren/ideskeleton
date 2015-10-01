@@ -7,7 +7,7 @@ setup(name='ideskeleton',
       author="Javier Ruiz Aranguren",
       license="MIT",
       url="http://github.com/jruizaranguren/ideskeleton",
-      packages=['ideskeleton', 'ideskeleton.builder', 'ideskeleton.ideprocesses']
+      packages=['ideskeleton']
       )
 
 __author__ = "Javier Ruiz Aranguren"
