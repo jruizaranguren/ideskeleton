@@ -81,9 +81,6 @@ A number of opinionated conventions are enforced:
 - Any not ignored folder in the first level is added as a python project.
 - Any not ignored folder in higher than first level are added as project folder.
 
-Contents
-========
-
 .. toctree::
    :maxdepth: 2
 
