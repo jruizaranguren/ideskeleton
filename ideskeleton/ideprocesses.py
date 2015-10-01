@@ -175,7 +175,7 @@ def vstudio_write(actions, path, overwrite=False):
             sch = "\"http://schemas.microsoft.com/developer/msbuild/2003\""
             lines.extend([
                 "<?xml version=\"1.0\" encoding=\"utf-8\"?>",
-                "<Project ToolsVersion=\"4.0\" _ xmlns={} DefaultTargets=\"Build\">".format(sch),
+                "<Project ToolsVersion=\"4.0\" xmlns={} DefaultTargets=\"Build\">".format(sch),
                 "\t<PropertyGroup>",
                 "\t\t<Configuration Condition=\" '$(Configuration)' == '' \">Debug</Configuration>",
                 "\t\t<SchemaVersion>2.0</SchemaVersion>",
