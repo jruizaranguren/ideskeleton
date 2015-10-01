@@ -12,7 +12,20 @@ setup(name='ideskeleton',
       author="Javier Ruiz Aranguren",
       license="MIT",
       url="http://github.com/jruizaranguren/ideskeleton",
-      packages=['ideskeleton']
+      packages=['ideskeleton'],
+      include_package_data=True,
+      classifiers=[
+          'Development Status :: 4 - Beta',
+          'Environment :: Console',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: MIT License',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3.3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          'Topic :: Text Editors :: Integrated Development Environments (IDE)'
+          ]
       )
 
 __author__ = "Javier Ruiz Aranguren"
