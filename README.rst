@@ -33,7 +33,7 @@ For normal use, all you have to do::
 
 This will import:
 
-- The :func:`build` that allows to build the files needed for IDE
+- The **build** function that allows to build the files needed for IDE
 
 Using from the command line
 ---------------------------
