@@ -1,4 +1,4 @@
-﻿"""Specific functions to process folder structures for distinct IDE's """
+﻿"""Specific functions to process folder structures for distinct IDE's. """
 from os.path import abspath, basename, splitext, dirname, join
 from uuid import uuid5, UUID
 
@@ -13,12 +13,12 @@ PROJ_TYPE = "888888A0-9F3D-457C-B088-3A5042F75D52"
 SOL_TYPE = "2150E333-8FDC-42A3-9474-1A3956D46DE8"
 
 def build_uuid(path):
-    """Build an uuid from path in upper string format"""
+    """Build an uuid from path in upper string format."""
     namespace = UUID("{D4A33062-9785-467D-8179-05177E00F1E2}")
     return str(uuid5(namespace, path)).upper()
 
 def parse_path(level, path):
-    """Get project name and relative path to it depending on level"""
+    """Get project name and relative path to it depending on level."""
     if level > 1:
         proj, rel_path = parse_path(level - 1, dirname(path))
         return proj, join(rel_path, basename(path), "")
@@ -26,16 +26,16 @@ def parse_path(level, path):
         return basename(path), ""
 
 def none_read(level, root, dirs, files):
-    """Just return parameters"""
+    """Just return parameters."""
     return [(level, root, dirs, files)]
 
 def none_write(actions, path, overwrite=False):
-    """Just return actions"""
+    """Just return actions."""
     # pylint: disable=unused-argument
     return actions
 
 def vstudio_read(level, root, dirs, files):
-    """Process function for visual studio IDE"""
+    """Process function for visual studio IDE."""
     next_actions = []
 
     container, relative_path = parse_path(level, abspath(root))
@@ -64,7 +64,7 @@ def vstudio_read(level, root, dirs, files):
     return next_actions
 
 def arrange_actions_into_structure(actions):
-    """Group actions and files in a dictionary structure to facilitate further processing"""
+    """Group actions and files in a dictionary structure to facilitate further processing."""
     structure = {}
     for action, container, path in actions:
 
@@ -90,7 +90,7 @@ def arrange_actions_into_structure(actions):
     return structure
 
 def __process_solution(metadata, structure):
-    """Process solution file"""
+    """Process solution file."""
     lines = []
     lines.extend([
         "Microsoft Visual Studio Solution File, Format Version 12.00",
@@ -158,7 +158,7 @@ def __process_solution(metadata, structure):
     return lines
 
 def vstudio_write(actions, path, overwrite=False):
-    """Process actions and write required IDE files to disk"""
+    """Process actions and write required IDE files to disk."""
     structure = arrange_actions_into_structure(actions)
 
     for file_name, metadata in structure.items():

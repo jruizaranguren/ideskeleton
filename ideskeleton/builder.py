@@ -1,17 +1,17 @@
-﻿"""Build IDE required files from python folder structure"""
+﻿"""Build IDE required files from python folder structure."""
 import os.path
 from fnmatch import fnmatch
 from .ideprocesses import PROCESSES
 
 def read_gitignore(source_path):
-    """Read .gitignore file and return list of valid patterns"""
+    """Read .gitignore file and return list of valid patterns."""
     path = os.path.join(source_path, ".gitignore")
     with open(path, 'r') as fgit:
         is_valid = lambda l: l and not l.startswith("#")
         return [l.strip() for l in fgit if is_valid(l.strip())]
 
 def is_ignored(item, patterns):
-    """Test if an item should be ignored according to the patterns"""
+    """Test if an item should be ignored according to the patterns."""
     return any([fnmatch(item, pattern) for pattern in patterns])
 
 def traverse(source_path, process):
@@ -35,14 +35,14 @@ def traverse(source_path, process):
     return actions
 
 def remove_ignored(alist, patterns, is_dir=False):
-    """Remove ignored items from alist according to patterns"""
+    """Remove ignored items from alist according to patterns."""
     checkdir = lambda x: x + "/" if is_dir else x
     to_ignore = [itm for itm in alist if is_ignored(checkdir(itm), patterns)]
     for toi in to_ignore:
         alist.remove(toi)
 
 def build(source_path, overwrite=True, ide=None):
-    """Traverse source_path folder structure and writes required IDE files
+    """Traverse source_path folder structure and writes required IDE files.
     Parameters:
     -----
     source_path: relative or full path of python code

@@ -1,4 +1,4 @@
-﻿"""Build IDE required files from python folder structure from command line
+﻿"""Build IDE required files from python folder structure from command line.
 """
 import argparse
 from ideskeleton.builder import build
