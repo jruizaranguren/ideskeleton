@@ -25,8 +25,6 @@ Off course, you can also import the package and customize the behavior as desire
 	from ideskeleton import builder
 	builder.build("your_path", overwrite=True, ide="vstudio")
 
-.. module:: ideskeleton
-
 For normal use, all you have to do::
 
 	import ideskeleton
