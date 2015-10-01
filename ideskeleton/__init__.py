@@ -11,4 +11,3 @@ Currently just Visual Studio is supported.
 
 """
 from .builder import build
-

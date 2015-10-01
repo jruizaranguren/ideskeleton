@@ -3,7 +3,12 @@ Build IDE required files from python folder structure.
 """
 import os.path
 from fnmatch import fnmatch
-from .ideprocesses import PROCESSES
+from .ideprocesses import vstudio_read, vstudio_write, none_read, none_write
+
+PROCESSES = {
+    "vstudio": [vstudio_read, vstudio_write],
+    None : [none_read, none_write]
+    }
 
 def read_gitignore(source_path):
     """Read .gitignore file and return list of valid patterns."""

@@ -232,7 +232,4 @@ def vstudio_write(actions, path, overwrite=False):
         with open(full_path, mode) as ide_file:
             ide_file.write("\n".join(lines))
 
-PROCESSES = {
-    "vstudio": [vstudio_read, vstudio_write],
-    None : [none_read, none_write]
-    }
+
