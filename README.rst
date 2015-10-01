@@ -51,21 +51,12 @@ In order to build the IDE files from command line you just type::
   -f, --force			force overwrite existing solution and project files
   -i, --ide				choose IDE {vstudio}
 
-builder module
+API docs
 --------------
 
-.. automodule::builder
+Can find api documentation at readthedocs_.
 
-.. autofunction:: build()
-
-ideprocesses module
--------------------
-
-.. automodule:: ideskeleton.ideprocesses
-
-.. autofunction:: ideskeleton.ideprocesses.vstudio_read
-
-.. autofunction:: ideskeleton.ideprocesses.vstudio_write
+.. _readthedocs: http://ideskeleton.readthedocs.org/en/latest/
 
 Important notes
 ---------------
