@@ -37,7 +37,7 @@ Just Visual Studio is supported so far, although adding new IDE's is pretty easy
 A number of opinionated conventions are enforced:
 
 - .gitignore file is used to decide which files to consider
-- Just *.py files are added with compile action.
+- Just ``*.py`` files are added with compile action.
 - Any not ignored folder in the first level is added as a python project.
 - Any not ignored folder in higher than first level are added as project folder.
 
