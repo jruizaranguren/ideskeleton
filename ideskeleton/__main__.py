@@ -1,7 +1,7 @@
 ﻿"""Build IDE required files from python folder structure from command line.
 """
 import argparse
-from ideskeleton.builder import build
+from ideskeleton import build
 
 def main():
     """Build IDE files from python folder structure."""

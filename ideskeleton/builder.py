@@ -1,4 +1,6 @@
-﻿"""Build IDE required files from python folder structure."""
+﻿"""
+Build IDE required files from python folder structure.
+"""
 import os.path
 from fnmatch import fnmatch
 from .ideprocesses import PROCESSES
@@ -42,12 +44,14 @@ def remove_ignored(alist, patterns, is_dir=False):
         alist.remove(toi)
 
 def build(source_path, overwrite=True, ide=None):
-    """Traverse source_path folder structure and writes required IDE files.
-    Parameters:
-    -----
-    source_path: relative or full path of python code
-    overwrite: it will overwrite existing solution and project files
-    ide: {"vstudio", None}
+    """
+    Traverse source_path folder structure and writes required IDE files.
+
+    :param source_path: relative or full path of python code
+    :param overwrite: it will overwrite existing solution and project files
+    :param ide: {"vstudio", None}
+
+    The resulting files are written to disk.
     """
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
