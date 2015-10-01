@@ -1,7 +1,7 @@
 ﻿"""Build IDE required files from python folder structure"""
 import os.path
 from fnmatch import fnmatch
-from .ideprocesses import processes
+from .ideprocesses import PROCESSES
 
 def read_gitignore(source_path):
     """Read .gitignore file and return list of valid patterns"""
@@ -52,7 +52,7 @@ def build(source_path, overwrite=True, ide=None):
     if not os.path.exists(source_path):
         raise IOError("source_path does not exist so not skeleton can be built")
 
-    read_process, write_process = processes[ide]
+    read_process, write_process = PROCESSES[ide]
     actions = traverse(source_path, read_process)
 
     return write_process(actions, source_path, overwrite)

@@ -79,7 +79,7 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
 
     expected = {
         "MySolution.sln" : {
-            "identifier": ide.identifier("MySolution.sln"),
+            "identifier": ide.build_uuid("MySolution.sln"),
             ide.ADD_COMPILE : [
                 "file1.py"
                 ],
@@ -92,7 +92,7 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
                 ]
             },
         "Proj1.pyproj" : {
-            "identifier": ide.identifier("Proj1.pyproj"),
+            "identifier": ide.build_uuid("Proj1.pyproj"),
             ide.ADD_FOLDER: [
                 join("sub_dir1",""),
                 join("sub_dir2","")
@@ -105,7 +105,7 @@ def test_arrange_actions_into_structure_groups_actions_to_files_and_action_type(
                 ]
             },
         "Proj2.pyproj" : {
-            "identifier": ide.identifier("Proj2.pyproj"),
+            "identifier": ide.build_uuid("Proj2.pyproj"),
             ide.ADD_FOLDER: [
                 join("sub_dir3","")
                 ],
