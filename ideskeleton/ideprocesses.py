@@ -29,8 +29,9 @@ def none_read(level, root, dirs, files):
     """Just return parameters"""
     return [(level, root, dirs, files)]
 
-def none_write(actions, *_):
+def none_write(actions, path, overwrite=False):
     """Just return actions"""
+    # pylint: disable=unused-argument
     return actions
 
 def vstudio_read(level, root, dirs, files):
