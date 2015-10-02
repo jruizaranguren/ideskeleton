@@ -15,9 +15,14 @@ It is common practice in Python open source projects not relying on any IDE.
 This tool allows you to have a clean folder structure that can be shared in GIT repositories
 while being able to work with your favorite IDE in your workstation.
 
+Install
+-------
+
+	``pip install ideskeleton`` 
+
 Basic usage
----------------
-After getting the code you can exectue the package from the command line::
+-----------
+You can execute the package from the command line::
 
 	python -m ideskeleton -f your-full-path
 
@@ -38,18 +43,17 @@ This will import:
 
 - The :func:`build` that allows to build the files needed for IDE
 
-Using from the command line
----------------------------
+Command line options
+--------------------
 
 In order to build the IDE files from command line you just type::
 
 	python -m ideskeleton [-h] [-f] [-i {vstudio}] source_path
 
-*positional arguments:*
-  source_path           path of the folder structure used to generate the IDE
-                        skeleton
+**positional arguments:**
+  source_path:			path of the folder structure used to generate the IDE skeleton
 
-*optional arguments:*
+**optional arguments:**
   -h, --help			show this help message and exit
   -f, --force			force overwrite existing solution and project files
   -i, --ide				choose IDE {vstudio}

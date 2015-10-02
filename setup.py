@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='ideskeleton',
-      version='0.12',
+      version='0.13',
       description="Scaffolding of IDE project files such as Visual Studio from Python existing" \
           "folder structure",
       long_description=readme(),
